@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "message": "Flight booked successfully.",
+  "confirmationNumber": "CONF154648",
+  "flightId": "39023fbe9e64da5b7407eea7898c9762",
+  "passenger": {
+    "firstName": "Mayuresh",
+    "lastName": "Choudhary"
+  }
+}
