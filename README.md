@@ -2,6 +2,16 @@
 
 A premium, high-performance **FastAPI** backend designed specifically for **Phonely Voice Agent webhooks**. It acts as a middleware and service layer translating flight search, booking, notifications, and human transfers into high-quality, voice-friendly response payloads.
 
+![System Architecture Concept](assets/airline_agent_architecture_graphic.png)
+
+---
+
+## 📡 Live Production Deployment
+
+Your webhook service is fully operational, live, and connected to your production integrations:
+- **Render Live Base API URL**: `https://airline-booking-ai-agent.onrender.com`
+- **Uptime Health Check**: [https://airline-booking-ai-agent.onrender.com/healthz](https://airline-booking-ai-agent.onrender.com/healthz)
+
 ---
 
 ## 🌟 Premium Architecture Features
@@ -46,6 +56,9 @@ airline-booking-agent/
 ├── data/
 │   ├── airports.dat             # Eager loaded OpenFlights DB
 │   └── sample_responses.md      # Reference schemas
+├── assets/                      # Visual illustrations and flow screenshots
+│   ├── airline_agent_architecture_graphic.png
+│   └── phonely_call_flow.png
 ├── .env.example                 # Shell environment keys
 ├── requirements.txt             # Python Package manifest
 ├── render.yaml                  # Deploy blueprint
@@ -83,15 +96,6 @@ Copy `.env.example` to `.env` and fill in your keys:
 ```bash
 cp .env.example .env
 ```
-Fill in the following:
-```ini
-TWILIO_ACCOUNT_SID=AC...
-TWILIO_AUTH_TOKEN=...
-TWILIO_FROM_NUMBER=+15005550006
-RESEND_API_KEY=re_...
-MY_TEST_PHONE=+14155551234
-MY_TEST_EMAIL=user@example.com
-```
 
 ### 4. Fetch the Airport Dataset
 Run this quick one-liner to download the active OpenFlights airports database:
@@ -103,9 +107,6 @@ python -c "import urllib.request; urllib.request.urlretrieve('https://raw.github
 ```bash
 uvicorn app.main:app --reload
 ```
-The server will boot and eager load the airports data:
-- Local URL: `http://127.0.0.1:8000`
-- Interactive API Docs (Swagger): `http://127.0.0.1:8000/docs`
 
 ---
 
@@ -117,7 +118,7 @@ A comprehensive suite of **14 test cases** utilizing **pytest** and **pytest-asy
 # Run the test suite
 pytest
 ```
-*Expected Output: `14 passed in X.XXs` with 100% green.*
+*Expected Output: `14 passed` with 100% green.*
 
 ---
 
@@ -193,7 +194,7 @@ Splits names securely on space. Initiates POST to booking upstream, retrieves fl
   {
     "flight_id": "39023fbe9e64da5b7407eea7898c9762",
     "passenger_name": "Mayuresh Choudhary",
-    "contact": "+14155551234",
+    "contact": "+16693406006",
     "origin_iata": "JFK",
     "dest_iata": "LAX",
     "date": "2026-07-15"
@@ -249,46 +250,18 @@ Initiates transferring user calls to standard agents. Summarizes context and log
     "session_id": "abc123"
   }
   ```
-- **Response:**
-  ```json
-  {
-    "status": "transfer_initiated",
-    "transfer_number": "+14155551234",
-    "handoff_summary": "Caller requested human agent. Context: User asked to speak to a human."
-  }
-  ```
-
-### 6. `/healthz` (GET)
-- **Response:**
-  ```json
-  {
-    "status": "ok",
-    "uptime_seconds": 124.52
-  }
-  ```
 
 ---
 
-## ☁️ Step-by-Step Render Deployment Guide
+## 📞 Phonely Call Flow Integration
 
-### One-Click Render Blueprint Setup
-1. **Push your code to GitHub**: Create a repository (e.g. `airline-booking-agent`) and commit all workspace files including `render.yaml` and `requirements.txt`. Ensure your `.env` is listed in `.gitignore` so no secrets are leaked!
-2. **Open Render Dashboard**: Go to [dashboard.render.com](https://dashboard.render.com/) and log in.
-3. **Deploy from Blueprint**:
-   - Click the **"New"** button in the top right and select **"Blueprint"**.
-   - Connect your GitHub repository containing the committed code.
-   - Render automatically reads `render.yaml` and sets up a Python web service under the name **"airline-booking-agent"**.
-4. **Configure Secrets**:
-   - The dashboard will list 6 variables that do not have values defined in the blueprint (marked `sync: false`):
-     - `TWILIO_ACCOUNT_SID`
-     - `TWILIO_AUTH_TOKEN`
-     - `TWILIO_FROM_NUMBER`
-     - `RESEND_API_KEY`
-     - `MY_TEST_PHONE`
-     - `MY_TEST_EMAIL`
-   - Paste in your valid production credentials from Twilio and Resend dashboards.
-5. **Approve and Deploy**:
-   - Click **"Apply"** to run.
-   - Render's build container installs python packages and runs the build command fetching `airports.dat` directly from our data source.
-   - The web app spins up and will display `Eagerly loaded 8000+ airports` in the console logs.
-6. **Integration**: Link your Phonely Agent's Webhook URL to `https://<your-render-subdomain>.onrender.com/`.
+Your AI booking assistant is visually designed and completely integrated using custom webhook action blocks in the Phonely Workflow dashboard.
+
+![Phonely Call Flow Configuration](assets/phonely_call_flow.png)
+
+The call flow draft is successfully configured and wired as follows:
+1. **Answer business questions**: Handles common customer support and knowledge queries.
+2. **Collect Passenger Details**: Captures passenger full name and contact information.
+3. **API Request (confirm-booking)**: Connected at the output of detail collection to query your live Render service.
+4. **End Call**: Gracefully wraps up the connection.
+5. **Email & SMS Notifications (Post-Call)**: Scheduled in background tasks to trigger once the caller disconnects, routing notifications automatically based on contact format.
