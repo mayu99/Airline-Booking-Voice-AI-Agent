@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     logger.info("Application shutting down.")
 
 app = FastAPI(
-    title="Phonely Airline Booking Agent Backend",
+    title="Airline Booking Voice AI Agent",
     version="1.0.0",
     lifespan=lifespan
 )

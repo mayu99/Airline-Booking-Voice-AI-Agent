@@ -1,4 +1,4 @@
-# SkyJet Airline Booking Webhook Backend
+# Airline Booking Voice AI Agent
 
 A premium, high-performance **FastAPI** backend designed specifically for **Phonely Voice Agent webhooks**. It acts as a middleware and service layer translating flight search, booking, notifications, and human transfers into high-quality, voice-friendly response payloads.
 
